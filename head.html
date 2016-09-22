@@ -6,14 +6,19 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
+			html {
+				height:100vh;
+			}
 			body {
 				font-family: Monospace;
 				background-color: #fff;
-				background-image: url(objects/noise.png);
-				background-size:10%;
+				background-image: linear-gradient(white, grey), url(objects/noise.png);
+				background-size:100%;
+
 				color: #fff;
 				margin: 0px;
 				overflow: hidden;
+				height: 100vh;
 			}
 			#info {
 				color: #fff;
@@ -109,16 +114,53 @@
 
 				scene = new THREE.Scene();
 
-				scene.fog = new THREE.FogExp2( 0xffffff, 0.005 );
+				scene.fog = new THREE.FogExp2( 0x440000, 0.009 );
 
-
+				// lights
 				var ambient = new THREE.AmbientLight( 0xaaaaaa );
 				scene.add( ambient );
 
 				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
-				directionalLight.position.set( 0, 0, 100 );
+				directionalLight.position.set( 50, 0, 100 );
 				scene.add( directionalLight );
 
+
+				var light2	= new THREE.DirectionalLight( 0xFAEDFF, 1 );
+
+				light2.shadowCameraLeft = -60; // or whatever value works for the scale of your scene
+				light2.shadowCameraRight = 60;
+				light2.shadowCameraTop = 60;
+				light2.shadowCameraBottom = -60;
+				light2.shadow.camera.near = 1;
+				light2.shadow.camera.far = 500;
+				light2.shadow.camera.fov = 130;
+				light2.shadow.mapSize.width = 2048;
+				light2.shadow.mapSize.height = 2048;
+
+				light2.castShadow = true;
+				light2.shadow.darkness = 0.5;
+				light2.position.set(0,100,-60);
+				light2.scale.set(100,100,100);
+				light2.target.position.set( 0, 0, 0 );
+
+				light2.shadow.camera.position.set( 0, 100, -40 );
+				scene.add(light2.target);
+
+				scene.add(light2);
+				var helper = new THREE.CameraHelper( light2.shadow.camera );
+				scene.add( helper );
+
+				// renderer
+
+				renderer = new THREE.WebGLRenderer({ alpha: true });
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setClearColor( 0xffffff, 0 );
+				container.appendChild( renderer.domElement );
+				renderer.shadowMap.enabled = true;
+
+				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				window.addEventListener( 'resize', onWindowResize, false );
 
 				// materials //
 				var material	= new THREE.MeshBasicMaterial({
@@ -133,7 +175,11 @@
 						linewidth: 5
 		    });
 
-				var discMaterial = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+				var discMaterial = new THREE.MeshPhongMaterial( {
+					color: 0xffffff,
+					shininess: 100,
+					emissive:  0xffffff,
+				});
 
 				var shaderMaterial = new THREE.ShaderMaterial( {
 					uniforms: {
@@ -155,21 +201,24 @@
 
 				var loader = new THREE.OBJLoader();
 
+				var galleryItems = [0,1,2,3];
+
 				loader.load( './assets/headframe.obj', function ( object ) {
 
 					object.traverse( function ( child ) {
 
 						if ( child instanceof THREE.Mesh ) {
-							//child.material.map = texture;
-							//child.material.side = THREE.DoubleSide;
+
 							child.material = material
 							child.material.color.setHex( 0xff0000 )
-							positions = new Float32Array(6)
-							colors = new Float32Array( 6);
-							sizes = new Float32Array(3);
+
+
+							positions = new Float32Array(galleryItems.length * 3)
+							colors = new Float32Array(galleryItems.length * 3);
+							sizes = new Float32Array(galleryItems.length * 2);
 
 							//for (var i = 2013; i < child.geometry.attributes.position.count; i+=3)
-							for (var i = 438; i < 443; i+=3) {
+							for (var i = 438; i < 450; i+=3) {
 
 							    var x = child.geometry.attributes.position.array[i];
 									var y = child.geometry.attributes.position.array[i+1]
@@ -183,26 +232,23 @@
 									var line = new THREE.Line(lineGeometry, lineMaterial);
 									scene.add(line);
 
-									// var discGeometry = new THREE.CylinderBufferGeometry( 5, 5, 1, 32 );
-									// var cylinder = new THREE.Mesh( discGeometry, discMaterial );
-									// cylinder.position.set(x*scale*2, (y*scale)*2+offsetY, z*scale*2);
-									// cylinder.rotation.x = -Math.PI/2
-									// scene.add( cylinder );
+									var sphereGeometry = new THREE.SphereBufferGeometry(1,1,10,10);
+									var sphere = new THREE.Mesh( sphereGeometry, discMaterial )
+									sphere.position.set(x*scale, y*scale+offsetY, z*scale);
+									scene.add(sphere);
 
 									console.log(end);
 									end.toArray(positions, i-438);
 
 									var color = new THREE.Color();
 									color.setHSL( 0.01 + 0.1, 1.0, 0.5 )
-									for (var j=0; j<6;j++) {
+									for (var j=0; j < colors.length; j++) {
 										color.toArray( colors, j);
-										//colors[j] = color;
 									}
-									console.log(colors);
-									for (var j=0; j<3; j++) {
+
+									for (var j=0; j < sizes.length; j++) {
 										sizes[ j ] = PARTICLE_SIZE;
 									}
-									console.log(sizes);
 							}
 
 						}
@@ -211,6 +257,7 @@
 
 					object.position.y = offsetY;
 					object.scale.set(scale,scale,scale)
+					object.castShadow = true;
 
 					scene.add( object );
 
@@ -222,22 +269,22 @@
 					// console.log(geometry1);
 					// //
 					particles = new THREE.Points( geometry1, shaderMaterial );
-					console.log(particles);
 					scene.add( particles );
+
+					var planeGeometry = new THREE.PlaneBufferGeometry( 1000, 1000, 32 );
+					//var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
+					var plane = new THREE.Mesh( planeGeometry, discMaterial);
+					plane.rotation.x = -Math.PI/2
+					plane.position.set(0,-40,0);
+					plane.receiveShadow = true;
+					scene.add( plane );
+
 
 					raycaster = new THREE.Raycaster();
 					mouse = new THREE.Vector2();
 
 
-					renderer = new THREE.WebGLRenderer({ alpha: true });
-					renderer.setPixelRatio( window.devicePixelRatio );
-					renderer.setSize( window.innerWidth, window.innerHeight );
-					renderer.setClearColor( 0xffffff, 0 );
-					container.appendChild( renderer.domElement );
-					renderer.shadowMap.enabled = true;
 
-					document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-					window.addEventListener( 'resize', onWindowResize, false );
 
 					animate();
 
@@ -284,7 +331,6 @@
 			}
 
 			function render() {
-
 
 				camera.position.x += ( mouseX - camera.position.x ) * 0.05;
 				camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
