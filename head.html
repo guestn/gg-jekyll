@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - loaders - OBJ loader</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #fff;
+				background-image: url(objects/noise.png);
+				background-size:10%;
+				color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#info {
+				color: #fff;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display:block;
+			}
+			#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+		</style>
+	</head>
+
+	<body>
+
+
+		<script src="//threejs.org/build/three.js"></script>
+		<script src="//threejs.org/examples/js/loaders/OBJLoader.js"></script>
+		<script type="x-shader/x-vertex" id="vertexshader">
+
+			attribute float size;
+			attribute vec3 customColor;
+
+			varying vec3 vColor;
+
+			void main() {
+
+				vColor = customColor;
+
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+
+				gl_PointSize = size * ( 300.0 / -mvPosition.z );
+
+				gl_Position = projectionMatrix * mvPosition;
+
+			}
+
+		</script>
+
+		<script type="x-shader/x-fragment" id="fragmentshader">
+
+			uniform vec3 color;
+			uniform sampler2D texture;
+
+			varying vec3 vColor;
+
+			void main() {
+
+				gl_FragColor = vec4( color * vColor, 1.0 );
+
+				gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+
+				if ( gl_FragColor.a < ALPHATEST ) discard;
+
+			}
+
+		</script>
+
+		<script>
+
+			var container;
+
+			var camera, scene, renderer;
+
+			var mouseX = 0, mouseY = 0;
+
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			var particles, uniforms;
+			var colors, positions, sizes, geometry1;
+
+			var PARTICLE_SIZE = 50;
+
+			var raycaster, intersects;
+			var mouse, INTERSECTED;
+
+			init();
+
+
+			function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.z = 100;
+				camera.lookAt(0,0,0);
+
+
+				// scene
+
+				scene = new THREE.Scene();
+
+				scene.fog = new THREE.FogExp2( 0xffffff, 0.005 );
+
+
+				var ambient = new THREE.AmbientLight( 0xaaaaaa );
+				scene.add( ambient );
+
+				var directionalLight = new THREE.DirectionalLight( 0xffeedd );
+				directionalLight.position.set( 0, 0, 100 );
+				scene.add( directionalLight );
+
+
+				// materials //
+				var material	= new THREE.MeshBasicMaterial({
+					color		: 0xcccccc,
+					wireframe:true,
+					fog: true,
+					wireframeLinewidth: 10
+
+				});
+				var lineMaterial = new THREE.LineBasicMaterial({
+		        color: 0xffffff,
+						linewidth: 5
+		    });
+
+				var discMaterial = new THREE.MeshPhongMaterial( {color: 0xffff00} );
+
+				var shaderMaterial = new THREE.ShaderMaterial( {
+					uniforms: {
+						color:   { value: new THREE.Color( 0xffffff ) },
+						//texture: { value: new THREE.TextureLoader().load( "//threejs.org/examples/textures/sprites/disc.png" ) }
+						texture: { value: new THREE.TextureLoader().load( "./assets/webpage.jpg" ) }
+					},
+					vertexShader: document.getElementById( 'vertexshader' ).textContent,
+					fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+					alphaTest: 0.9,
+
+				} );
+
+				// model
+
+				var scale = 30;
+				var offsetY = 40;
+				var positions, colors, sizes;
+
+				var loader = new THREE.OBJLoader();
+
+				loader.load( './assets/headframe.obj', function ( object ) {
+
+					object.traverse( function ( child ) {
+
+						if ( child instanceof THREE.Mesh ) {
+							//child.material.map = texture;
+							//child.material.side = THREE.DoubleSide;
+							child.material = material
+							child.material.color.setHex( 0xff0000 )
+							positions = new Float32Array(6)
+							colors = new Float32Array( 6);
+							sizes = new Float32Array(3);
+
+							//for (var i = 2013; i < child.geometry.attributes.position.count; i+=3)
+							for (var i = 438; i < 443; i+=3) {
+
+							    var x = child.geometry.attributes.position.array[i];
+									var y = child.geometry.attributes.position.array[i+1]
+									var z = child.geometry.attributes.position.array[i+2]
+									var start = new THREE.Vector3( x*scale, y*scale+offsetY, z*scale )
+									var end = new THREE.Vector3(x*scale*2, (y*scale)*2+offsetY, z*scale*2 )
+
+									var lineGeometry = new THREE.Geometry();
+									lineGeometry.vertices.push(start);
+									lineGeometry.vertices.push(end);
+									var line = new THREE.Line(lineGeometry, lineMaterial);
+									scene.add(line);
+
+									// var discGeometry = new THREE.CylinderBufferGeometry( 5, 5, 1, 32 );
+									// var cylinder = new THREE.Mesh( discGeometry, discMaterial );
+									// cylinder.position.set(x*scale*2, (y*scale)*2+offsetY, z*scale*2);
+									// cylinder.rotation.x = -Math.PI/2
+									// scene.add( cylinder );
+
+									console.log(end);
+									end.toArray(positions, i-438);
+
+									var color = new THREE.Color();
+									color.setHSL( 0.01 + 0.1, 1.0, 0.5 )
+									for (var j=0; j<6;j++) {
+										color.toArray( colors, j);
+										//colors[j] = color;
+									}
+									console.log(colors);
+									for (var j=0; j<3; j++) {
+										sizes[ j ] = PARTICLE_SIZE;
+									}
+									console.log(sizes);
+							}
+
+						}
+
+					});
+
+					object.position.y = offsetY;
+					object.scale.set(scale,scale,scale)
+
+					scene.add( object );
+
+					geometry1 = new THREE.BufferGeometry();
+					geometry1.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
+					geometry1.addAttribute( 'customColor', new THREE.BufferAttribute( colors, 3 ) );
+					geometry1.addAttribute( 'size', new THREE.BufferAttribute( sizes, 1 ) );
+					//
+					// console.log(geometry1);
+					// //
+					particles = new THREE.Points( geometry1, shaderMaterial );
+					console.log(particles);
+					scene.add( particles );
+
+					raycaster = new THREE.Raycaster();
+					mouse = new THREE.Vector2();
+
+
+					renderer = new THREE.WebGLRenderer({ alpha: true });
+					renderer.setPixelRatio( window.devicePixelRatio );
+					renderer.setSize( window.innerWidth, window.innerHeight );
+					renderer.setClearColor( 0xffffff, 0 );
+					container.appendChild( renderer.domElement );
+					renderer.shadowMap.enabled = true;
+
+					document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+					window.addEventListener( 'resize', onWindowResize, false );
+
+					animate();
+
+
+				});
+
+
+
+
+
+
+			}
+
+			function onWindowResize() {
+
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+			}
+
+			function onDocumentMouseMove( event ) {
+				//event.preventDefault();
+
+				mouseX = ( event.clientX - windowHalfX ) / 4;
+				mouseY = ( event.clientY - windowHalfY ) / 4;
+
+				mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+				mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+				//console.log(mouse);
+			}
+
+			//
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+				render();
+
+			}
+
+			function render() {
+
+
+				camera.position.x += ( mouseX - camera.position.x ) * 0.05;
+				camera.position.y += ( - mouseY - camera.position.y ) * 0.05;
+
+				camera.lookAt( scene.position );
+
+
+				var geometry = particles.geometry;
+				var attributes = geometry.attributes;
+
+				raycaster.setFromCamera( mouse, camera );
+
+				intersects = raycaster.intersectObject( particles );
+				if ( intersects.length > 0 ) {
+
+					if ( INTERSECTED != intersects[ 0 ].index ) {
+
+						attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE;
+
+						INTERSECTED = intersects[ 0 ].index;
+
+						document.body.style.cursor = 'pointer'
+						attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE * 1.7;
+						attributes.size.needsUpdate = true;
+
+					}
+
+				} else if ( INTERSECTED !== null ) {
+					attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE;
+					attributes.size.needsUpdate = true;
+					INTERSECTED = null;
+
+				}
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+
+	</body>
+</html>

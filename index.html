@@ -20,15 +20,24 @@
 	<span>interesting line of text</span>
 	
 	
-	<div id="buttons">
+
+  	<div class="menu-container">
+	  	<svg id="menu">
+	  	</svg>
+	  	<img id="menu-img" src="//static.pexels.com/photos/3182/dark-mountain.jpeg"/>
+
+	  	<div class="menu-icon">
+			<span class="stripe"></span>
+			<span class="stripe"></span>
+			<span class="stripe"></span>
+		</div>
+  	</div>
+  	
+  	<div id="buttons">
 		<button id="b-1">1</button>
 		<button id="b-2"><</button>
   	</div>
   	
-  	<svg id="menu">
-  	</svg>
-  	<img id="menu-img" src="//static.pexels.com/photos/3182/dark-mountain.jpeg"/>
-
 <script>
 
 /* h+ Copyright 2015 Mike Bostock */
@@ -133,7 +142,7 @@ poly.attr({ /*fill:'url(#img1)'*/ fill: '#333'})
 
 var rect = s.rect(960,340,40,40).attr({fill:'red',id:'menu-btn'});
 
-var type = mina.easeinout
+var type = mina.linear
 var dur = 140
 
 
@@ -152,6 +161,7 @@ var frames = [
 function nextFrame ( el, frameArr, n ) {
    if( n >= frameArr.length ) { 
      activateMenuItems();
+     menuInProgress();
      return;
    }
    el.animate( frameArr[n].animation, frameArr[n].dur, nextFrame.bind( null, el, frameArr, n + 1 ) );
@@ -161,18 +171,25 @@ function lastFrame ( el, frameArr, n ) {
    el.animate( frameArr[n].animation, frameArr[n].dur, lastFrame.bind( null, el, frameArr, n - 1 ));
 }
 var menuImg = document.getElementById('menu-img');
+
+
+function menuInProgress() {
+	 document.body.classList.toggle('animating');
+}
+
 function activateMenuItems() {
-  menuImg.classList.toggle('activated');
+  	document.body.classList.toggle('activated');
 }
 
 
 
-document.getElementById('menu-btn').addEventListener('click', function(){
-  nextFrame(poly, frames,0);
+document.querySelector('.menu-icon').addEventListener('click', function(){
+	menuInProgress();
+  	nextFrame(poly, frames,0);
 })
 document.getElementById('b-2').addEventListener('click', function(){
-	 menuImg.classList.toggle('activated');
-  lastFrame(poly, frames, 5);
+	// menuImg.classList.toggle('activated');
+	 lastFrame(poly, frames, 5);
 })
 </script>
 
