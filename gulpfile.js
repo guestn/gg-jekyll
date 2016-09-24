@@ -3,13 +3,18 @@ const concat = require('gulp-concat');
 const sass = require('gulp-sass');
 const child = require('child_process');
 const gutil = require('gulp-util');
+const plumber = require('gulp-plumber');
+const notify = require('gulp-notify');
 
 //const cssFiles = './css/**/*.?(s)css';
-const cssFiles = './css/*.*'
+const cssFiles = './css/**/*.scss'
 
 
  gulp.task('css', () => {
-   gulp.src(cssFiles)
+   gulp.src('./css/main.scss')
+     .pipe(plumber({
+       errorHandler: reportError
+     }))
      .pipe(sass())
      .pipe(concat('all.css'))
      .pipe(gulp.dest('assets'));
@@ -59,3 +64,14 @@ gulp.task('watch', () => {
 
 
 gulp.task('default', ['css', 'jekyll', 'serve'])
+
+function reportError(error) {
+    notify({
+        title: 'Gulp Task Error',
+        message: 'Check the console.'
+    }).write(error);
+
+    console.log(error.toString());
+
+    this.emit('end');
+}

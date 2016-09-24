@@ -5,39 +5,85 @@
 		<title>three.js webgl - loaders - OBJ loader</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			html {
-				height:100vh;
-			}
-			body {
-				font-family: Monospace;
-				background-color: #fff;
-				background-image: linear-gradient(white, grey), url(objects/noise.png);
-				background-size:100%;
+		<link href="assets/all.css" rel="stylesheet" type="text/css">
 
-				color: #fff;
-				margin: 0px;
-				overflow: hidden;
-				height: 100vh;
-			}
-			#info {
-				color: #fff;
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				text-align: center;
-				z-index: 100;
-				display:block;
-			}
-			#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
-		</style>
 	</head>
 
-	<body>
+	<body class="gallery-page gallery-active">
+
+		<div class="gallery-container">
+				<a class="gallery-container-toggle">&times;</a>
+				<div id="slider" class="slide-1">
+					<section id="slide-1">
+						<h2>1</h2>
+						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
+					</section>
+					<section id="slide-2">
+						<h2>2</h2>
+						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
+					</section>
+					<section id="slide-3">
+						<h2>3</h2>
+						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
+					</section>
+				</div>
+				<a class="nav" id="nav-prev">UP</a>
+				<a class="nav" id="nav-next">DOWN</a>
+
+		</div>
+
+		<script>
+			// gallery //
+			(function() {
+				var nav = document.querySelectorAll('.nav')
+				for (var i=0; i <nav.length; i++) {
+					nav[i].addEventListener('click',navigate)
+				}
+
+				var slider = document.getElementById('slider')
+				var currentSlide = 1;
+				var slideCount = 3;
+
+				function setNav(n) {
+					if (n==1) {
+						nav[0].classList = 'nav hidden'
+					} else if (n==slideCount) {
+						nav[1].classList = 'nav hidden'
+					} else {
+						nav[0].classList = nav[1].classList = 'nav';
+						//nav[1].classList = 'nav';
+
+					}
+				}
+
+				function navigate(e) {
+					var dir = e.target.id;
+					console.log(dir +' '+currentSlide)
+					if (dir == 'nav-prev' & currentSlide > 1) {
+						currentSlide--
+						slider.classList = 'slide-' + currentSlide
+						setNav(currentSlide);
+
+					} else if (dir == 'nav-next' & currentSlide < slideCount) {
+						console.log(currentSlide)
+						currentSlide++
+						slider.classList = 'slide-' + currentSlide
+						setNav(currentSlide);
+
+					}
+				}
+
+				setNav(currentSlide)
 
 
-		<script src="//threejs.org/build/three.js"></script>
-		<script src="//threejs.org/examples/js/loaders/OBJLoader.js"></script>
+
+
+
+		})()
+		</script>
+
+		<script src="js/three.min.js"></script>
+		<script src="js/OBJLoader.min.js"></script>
 		<script type="x-shader/x-vertex" id="vertexshader">
 
 			attribute float size;
@@ -102,6 +148,15 @@
 
 			function init() {
 
+				//gallery
+
+				document.querySelector('.gallery-container-toggle').addEventListener('click',function(e){
+					console.log('hello');
+					document.body.classList.toggle('gallery-active');
+				})
+
+
+				//create threejs element
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
@@ -114,7 +169,7 @@
 
 				scene = new THREE.Scene();
 
-				scene.fog = new THREE.FogExp2( 0x440000, 0.009 );
+				scene.fog = new THREE.FogExp2( 0xaaaaaa, 0.009 );
 
 				// lights
 				var ambient = new THREE.AmbientLight( 0xaaaaaa );
@@ -127,10 +182,10 @@
 
 				var light2	= new THREE.DirectionalLight( 0xFAEDFF, 1 );
 
-				light2.shadowCameraLeft = -60; // or whatever value works for the scale of your scene
-				light2.shadowCameraRight = 60;
-				light2.shadowCameraTop = 60;
-				light2.shadowCameraBottom = -60;
+				light2.shadow.camera.left = -60; // or whatever value works for the scale of your scene
+				light2.shadow.camera.right = 60;
+				light2.shadow.camera.top = 60;
+				light2.shadow.camera.bottom = -60;
 				light2.shadow.camera.near = 1;
 				light2.shadow.camera.far = 500;
 				light2.shadow.camera.fov = 130;
@@ -139,7 +194,7 @@
 
 				light2.castShadow = true;
 				light2.shadow.darkness = 0.5;
-				light2.position.set(0,100,-60);
+				light2.position.set(0,100,60);
 				light2.scale.set(100,100,100);
 				light2.target.position.set( 0, 0, 0 );
 
@@ -163,7 +218,7 @@
 				window.addEventListener( 'resize', onWindowResize, false );
 
 				// materials //
-				var material	= new THREE.MeshBasicMaterial({
+				var material	= new THREE.MeshPhongMaterial({
 					color		: 0xcccccc,
 					wireframe:true,
 					fog: true,
@@ -211,7 +266,8 @@
 
 							child.material = material
 							child.material.color.setHex( 0xff0000 )
-
+							child.castShadow = true;
+							//child.receiveShadow = true;
 
 							positions = new Float32Array(galleryItems.length * 3)
 							colors = new Float32Array(galleryItems.length * 3);
@@ -237,7 +293,7 @@
 									sphere.position.set(x*scale, y*scale+offsetY, z*scale);
 									scene.add(sphere);
 
-									console.log(end);
+									//console.log(end);
 									end.toArray(positions, i-438);
 
 									var color = new THREE.Color();
@@ -258,7 +314,7 @@
 					object.position.y = offsetY;
 					object.scale.set(scale,scale,scale)
 					object.castShadow = true;
-
+					object.receiveShadow = true;
 					scene.add( object );
 
 					geometry1 = new THREE.BufferGeometry();
@@ -355,6 +411,7 @@
 						document.body.style.cursor = 'pointer'
 						attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE * 1.7;
 						attributes.size.needsUpdate = true;
+						document.addEventListener('click', toggleGallery);
 
 					}
 
@@ -362,6 +419,12 @@
 					attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE;
 					attributes.size.needsUpdate = true;
 					INTERSECTED = null;
+
+				}
+
+				function toggleGallery() {
+					document.body.classList.add('gallery-active');
+					document.removeEventListener('click', toggleGallery);
 
 				}
 
