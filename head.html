@@ -6,74 +6,175 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link href="assets/all.css" rel="stylesheet" type="text/css">
+		<script src="js/geoJelly.js"></script>
 
 	</head>
 
 	<body class="gallery-page gallery-active">
 
 		<div class="gallery-container">
-				<a class="gallery-container-toggle">&times;</a>
+			<canvas id="gallery-canvas" width="1000" height="800"></canvas>
 				<div id="slider" class="slide-1">
-					<section id="slide-1">
+				<section class="slide active-slide" id="slide-1">
 						<h2>1</h2>
 						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
+						<div class="gallery-text">
+							These Californian winemakers had a tricky problem- they'd found that existing websites for high-end wines from the region sometimes appeared elitist and unfriendly, and this was not the image they wanted to convey for their brand. The site had to convey the high-quality, luxury product of which they were proud, yet feel approachable and friendly to visitors. The dark colours and gold text mirror the beautiful bottle label, and the homepage background gives a sense of context for the product. Clicking the homepage links brings up a translucent overlay window in which the content is displayed elegantly.
+ Custom photography and homepage background
+ Auto-hide footer menu
+ Fully responsive - for smartphones, tablet and desktop
+Smooth animated content pages
+ HTML5 · CSS3 · JQuery · Ajax
+www.blackcordon.com
+						</div>
 					</section>
-					<section id="slide-2">
+					<section class="slide" id="slide-2">
 						<h2>2</h2>
-						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
+						<img src="assets/images/portfolio/grahamortho-1.jpg">
+						<div class="gallery-text">
+							These Californian winemakers had a t
+ HTML5 · CSS3 · JQuery · Ajax
+www.blackcordon.com
+						</div>
 					</section>
-					<section id="slide-3">
+					<section class="slide" id="slide-3">
 						<h2>3</h2>
 						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
 					</section>
 				</div>
-				<a class="nav" id="nav-prev">UP</a>
-				<a class="nav" id="nav-next">DOWN</a>
+				<a class="gallery-container-toggle">
+					<svg viewBox="0 0 54 54" width="54" height="54" preserveAspectRatio="none">
+						<polyline points="5,10 52,42" fill="none" stroke="white" stroke-width="2"	/>
+						<polyline points="2,52 50,2" fill="none" stroke="white" stroke-width="2"	/>
+						<circle cx="2" cy="52" r="2" fill="white"/>
+						<circle cx="50" cy="2" r="2" fill="white"/>
+						<circle cx="5" cy="10" r="2" fill="white"/>
+						<circle cx="52" cy="42" r="2" fill="white"/>
+					</svg>
+				</a>
+				<a class="nav" id="nav-prev">
+					<span>PREVIOUS</span>
+					<svg viewBox="0 0 100 54" width="100" height="54" preserveAspectRatio="none">
+						<polyline points="2,52 50,2 98,52" fill="none" stroke="white" stroke-width="2"	/>
+						<circle cx="2" cy="52" r="2" fill="white"/>
+						<circle cx="50" cy="2" r="2" fill="white"/>
+						<circle cx="98" cy="52" r="2" fill="white"/>
+					</svg>
+				</a>
+				<a class="nav" id="nav-next">
+					<span>NEXT</span>
+					<svg viewBox="0 0 100 55" width="100" height="54" preserveAspectRatio="none">
+						<polyline points="2,2 50,50 98,2" fill="none" stroke="white" stroke-width="2"	/>
+						<circle cx="2" cy="2" r="2" fill="white"/>
+						<circle cx="50" cy="50" r="2" fill="white"/>
+						<circle cx="98" cy="2" r="2" fill="white"/>
+					</svg>
+				</a>
 
 		</div>
 
 		<script>
 			// gallery //
 			(function() {
-				var nav = document.querySelectorAll('.nav')
-				for (var i=0; i <nav.length; i++) {
-					nav[i].addEventListener('click',navigate)
-				}
+				// set up canvas bg //
+				geoJelly('rgba(255,255,255,0.5)', 'rgba(255,255,255,0.5)', '#gallery-canvas');
 
-				var slider = document.getElementById('slider')
+				// navigation //
+
+				var slider = document.getElementById('slider');
+				var slides = document.querySelectorAll('.slide');
 				var currentSlide = 1;
 				var slideCount = 3;
 
-				function setNav(n) {
+				var nav = document.querySelectorAll('.nav')
+				for (var i=0; i <nav.length; i++) {
+					nav[i].addEventListener('click',onNavPress)
+				}
+				window.addEventListener( 'mousewheel', function(e){
+					onMouseWheel(e)
+
+				} );
+				window.addEventListener( 'DOMMouseScroll', function(e) {
+					onMouseWheel(e)
+				});
+
+				// set nav arrows
+				function setNavControls(n) {
 					if (n==1) {
-						nav[0].classList = 'nav hidden'
+						nav[0].classList = 'nav hidden';
 					} else if (n==slideCount) {
-						nav[1].classList = 'nav hidden'
+						nav[1].classList = 'nav hidden';
 					} else {
 						nav[0].classList = nav[1].classList = 'nav';
-						//nav[1].classList = 'nav';
-
 					}
 				}
 
-				function navigate(e) {
-					var dir = e.target.id;
-					console.log(dir +' '+currentSlide)
+				// scroll handler
+				var onMouseWheel = debounce(function(e) {
+					e = e ? e : window.e;
+						console.log('delta: ' + e.wheelDelta);
+						var scroll = ( e.detail ? e.detail : e.wheelDelta );
+						if (scroll > 50  & currentSlide > 1) {
+							prevSlide();
+						} else if (scroll < -50 & currentSlide < slideCount) {
+							nextSlide();
+						}
+				}, 20);
+
+				// nav button press handler
+				function onNavPress(e) {
+					e = e ? e : window.e;
+
+					var dir = e.target.id;// | e.target.parentElement.id;
+					dir = (!dir) ? e.target.parentElement.id : '';
+
 					if (dir == 'nav-prev' & currentSlide > 1) {
-						currentSlide--
-						slider.classList = 'slide-' + currentSlide
-						setNav(currentSlide);
-
+						prevSlide()
 					} else if (dir == 'nav-next' & currentSlide < slideCount) {
-						console.log(currentSlide)
-						currentSlide++
-						slider.classList = 'slide-' + currentSlide
-						setNav(currentSlide);
-
+						nextSlide()
 					}
 				}
 
-				setNav(currentSlide)
+				// goto to previous
+				function prevSlide() {
+					currentSlide--
+					slider.classList = 'slide-' + currentSlide
+					setNavControls(currentSlide);
+					for (var i=0; i < slides.length; i++) {
+						slides[i].classList = 'slide';
+					}
+					document.getElementById('slide-'+currentSlide).classList.add('active-slide')
+				}
+
+				// goto to next
+				function nextSlide() {
+					console.log(currentSlide)
+					currentSlide++
+					slider.classList = 'slide-' + currentSlide
+					setNavControls(currentSlide);
+					for (var i=0; i < slides.length; i++) {
+						slides[i].classList = 'slide';
+					}
+					document.getElementById('slide-'+currentSlide).classList.add('active-slide')
+				}
+
+				// debounce scroll etc
+				function debounce(func, wait, immediate) {
+					var timeout;
+					return function() {
+						var context = this, args = arguments;
+						var later = function() {
+							timeout = null;
+							if (!immediate) func.apply(context, args);
+						};
+						var callNow = immediate && !timeout;
+						clearTimeout(timeout);
+						timeout = setTimeout(later, wait);
+						if (callNow) func.apply(context, args);
+					};
+				};
+
+				setNavControls(currentSlide)
 
 
 
@@ -84,6 +185,7 @@
 
 		<script src="js/three.min.js"></script>
 		<script src="js/OBJLoader.min.js"></script>
+
 		<script type="x-shader/x-vertex" id="vertexshader">
 
 			attribute float size;
@@ -150,6 +252,7 @@
 
 				//gallery
 
+
 				document.querySelector('.gallery-container-toggle').addEventListener('click',function(e){
 					console.log('hello');
 					document.body.classList.toggle('gallery-active');
@@ -214,7 +317,7 @@
 				container.appendChild( renderer.domElement );
 				renderer.shadowMap.enabled = true;
 
-				document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+				//////////////////////document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 				window.addEventListener( 'resize', onWindowResize, false );
 
 				// materials //
@@ -424,6 +527,7 @@
 
 				function toggleGallery() {
 					document.body.classList.add('gallery-active');
+					document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 					document.removeEventListener('click', toggleGallery);
 
 				}
