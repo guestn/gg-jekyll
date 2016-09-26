@@ -32,22 +32,15 @@ html {
 body {
 	position: relative;
 	min-height: 100%;
-	background: #DAE2F8; /* fallback for old browsers */
-	background: -webkit-linear-gradient(315deg, #DAE2F8 , #D6A4A4); /* Chrome 10-25, Safari 5.1-6 */
-	background: linear-gradient(315deg, #DAE2F8 , #D6A4A4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	margin: 0;
+	padding: 0;
+	background: #DAE2F8;
+	background-image:url(images/noise.png), linear-gradient(315deg, #DAE2F8 , #D6A4A4);
+	background-size: 20%, 100%;
 	font-family: $base-font-family;
 }
 
-body.gallery-page {
-	//font-family: Monospace;
-	background-color: #fff;
-	background-image: linear-gradient(white 0%, #aaa 40%, #aaa 100%), url(objects/noise.png);
-	background-size:100%;
-	color: #fff;
-	margin: 0px;
-	overflow: hidden;
-	height: 100vh;
-}
+
 header {
 	position: fixed;
 	top: 0;
@@ -55,22 +48,52 @@ header {
 	width:100%;
 	height:100px;
 	//background: white;
-	box-shadow: 0 0 10px 0 rgba(50,50,50,0.2);
 	text-align: center;
 	svg {
-		border:1px solid blue;
+		//border:1px solid blue;
 		height: 100px;
 		width:100%;
 	}
 	img {
 		position:absolute;
-		top:0;
-		z-index: 200;
+		height:40px;
+		top:8px;
+		left:45%;
+		z-index: 2;
 	}
 }
-	header img {
-		height:40px;
-	}
+
+// pages //
+
+.page {
+	position:fixed;
+	width:100vw;
+	height:100vh;
+	top:0;
+	left:0;
+	background: green;
+	transform: translateY(100%);
+	//z-index: 10;
+}
+
+.page#portfolio {
+	//font-family: Monospace;
+	background-color: #fff;
+	background-image: linear-gradient(white 0%, #aaa 40%, #aaa 100%), url(images/noise.png);
+	background-size:100%;
+	color: #fff;
+	margin: 0px;
+	overflow: hidden;
+	height: 100vh;
+}
+
+
+.active-portfolio .page#portfolio {
+	transform:translateY(0);
+}
+
+// index //
+
 canvas {
 	position:absolute;
 	top:0;left:0;
@@ -86,6 +109,11 @@ span {
 	font-size: 5vw;
 }
 
+.spacer {
+	position: relative;
+	height:2000px;
+	width:20px;
+}
 .inline-block {
 	display: inline-block;
 }
@@ -96,12 +124,7 @@ span {
 	float:right;
 }
 
-// menu
-
-	#buttons {
-	  position:absolute;
-	  z-index:500;
-	}
+// menu //
 
 .menu-container {
 	position:fixed;
@@ -129,18 +152,53 @@ span {
 	  width:100%;
 	  opacity:0;
 		transform: translateY(-100%);
-	  transition:all 1s;
+	  transition:all .5s;
 	  z-index: 2;
 	}
 
+	#menu-container-close {
+		position:absolute;
+		right:10px;
+		top:10px;
+		z-index: 4;
+		opacity: 0.5;
+		transition: transform .5s;
+		&:hover svg {
+				animation: bulge 1s;
+		}
+	}
 
-
+  @keyframes bulge {
+  	0, 100% { transform:scale(1); opacity:0.5}
+		30% {transform:scale(1.2); opacity:1}
+  }
+	#menu-list {
+		position: absolute;
+		top: 40%;
+		left:40%;
+		list-style: none;
+		z-index: 3;
+		opacity: 0;
+		transform: translateY(-1000px);
+		transition: opacity 2.5s linear 1.5s, transform 0.5s;
+	  a {
+			color: white;
+			line-height: 1.5;
+			text-decoration: none;
+			transition:opacity .4s;
+			&:hover {
+				opacity: 0.5;
+			}
+		}
+		font-size: 5vw;
+	}
 
 	.menu-icon {
 	  position:absolute;
 	  right:0;
-	  top:50%;
+	  top: calc(50% - 30px);
 	  width: 50px;
+		height: 60px;
 	  border:1px solid red;
 		cursor: pointer;
 		z-index: 3;
@@ -183,18 +241,71 @@ span {
 
 body.animating {
 	.menu-icon {
-		pointer-events: none;
+	//	pointer-events: none;
 	}
 }
 
-
-body.activated .menu-container img#menu-img {
-		opacity:1;
-		transform: translateY(0%);
-		transition: transform 1s, opacity .5s .5s;
+body.activated .menu-container {
+		img#menu-img {
+			opacity:1;
+			transform: translateY(0%);
+			transition: transform 1s, opacity .5s .5s;
+	}
+		#menu-container-close {
+			transform: translateY(0);
+		}
+		#menu-list {
+			transform: translateY(0);
+			opacity: 1;
+		}
 	}
 @keyframes sliding {
     0% {transform: translateX(0);}
     50% {transform: translateX(-15%);}
     100% {transform: translateX(0);}
+}
+
+// footer //
+
+footer {
+	margin:0;
+	background: rgba(255,255,255,0.5);
+	padding:20px;
+	form {
+		width: 300px;
+		label {
+			position: relative;
+			display: block;
+			border-bottom: 2px solid black;
+			margin-bottom: 0.5em;
+			&:before,
+			&:after {
+				position: absolute;
+				content:' ';
+				background:black;
+				width:6px;
+				height:6px;
+				border-radius:50%;
+			}
+			&:before {
+				bottom:-4px;
+				left:-3px;
+			}
+			&:after {
+				bottom:-4px;
+				right:-3px;
+			}
+
+
+		}
+		input, textarea {
+			display: block;
+			width:100%;
+			font-family: $base-font-family;
+			font-size: 1.5em;
+			padding:0.5em;
+			border:none;
+
+		}
+	}
 }

@@ -5,8 +5,13 @@
 	<link href="assets/all.css" rel="stylesheet" type="text/css">
 
 	<script src="//cdnjs.cloudflare.com/ajax/libs/snap.svg/0.3.0/snap.svg-min.js"></script>
+	<script src="js/three.min.js"></script>
+	<script src="js/OBJLoader.min.js"></script>
+
 </head>
 <body>
+
+
 	<header><img src="//www.guestandguest.com/images/gg_guestandguest-txt_logo.png"/>
 		<svg viewBox="0 0 100 246" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="1.4" preserveAspectRatio="none">
 			<path d="M0 0l16.3 85.2 15 43L48.8 246l18.4-24L100 0H0z" fill="rgba(0,0,0,0.02)"/>
@@ -18,55 +23,134 @@
 	<canvas id="index-canvas" width="1000" height="800"></canvas>
 	<img id="finger" src="https://openclipart.org/image/2400px/svg_to_png/203413/pointing-finger-right.png">
 	<span>interesting line of text</span>
+	<div class="spacer"></div>
+
+	<section class="page" id="portfolio">
+		<div class="gallery-container">
+			<canvas id="gallery-canvas" width="1000" height="800"></canvas>
+				<div id="slider" class="slide-1">
+				<section class="slide active-slide" id="slide-1">
+						<h2>1</h2>
+						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
+						<div class="gallery-text">
+							These Californian winemakers had a tricky problem- they'd found that existing websites for high-end wines from the region sometimes appeared elitist and unfriendly, and this was not the image they wanted to convey for their brand. The site had to convey the high-quality, luxury product of which they were proud, yet feel approachable and friendly to visitors. The dark colours and gold text mirror the beautiful bottle label, and the homepage background gives a sense of context for the product. Clicking the homepage links brings up a translucent overlay window in which the content is displayed elegantly.
+ Custom photography and homepage background
+ Auto-hide footer menu
+ Fully responsive - for smartphones, tablet and desktop
+Smooth animated content pages
+ HTML5 · CSS3 · JQuery · Ajax
+www.blackcordon.com
+						</div>
+						<svg viewBox="0 0 54 54" width="100" height="54" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="square">
+							<path d="M26.8 13.8L28 15v12.2l-7.4 7.2-7.5-7.2V15l7.6-7 3.2 3" fill="none" stroke-width="1" stroke="#fff" transform="rotate(45 22.075 16.775) scale(1.58594 1.66867)"/>
+							<path d="M26.8 13.8L28 15v12.2l-7.4 7.2-7.5-7.2V15l7.6-7 3.2 3" fill="none" stroke-width="1" stroke="#fff" transform="rotate(-135 31.366 24.893) scale(1.58594 1.66867)"/>
+					</svg>
+					</section>
+					<section class="slide" id="slide-2">
+						<h2>2</h2>
+						<img src="assets/images/portfolio/grahamortho-1.jpg">
+						<div class="gallery-text">
+							These Californian winemakers had a t
+ 							HTML5 · CSS3 · JQuery · Ajax
+							www.grahamortho.com
+						</div>
+					</section>
+					<section class="slide" id="slide-3">
+						<h2>3</h2>
+						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
+					</section>
+				</div>
+				<a class="gallery-container-toggle">
+					<svg viewBox="0 0 54 54" width="54" height="54" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+						<polyline points="5,10 52,42" fill="none" stroke="white" stroke-width="2"	/>
+						<polyline points="2,52 50,2" fill="none" stroke="white" stroke-width="2"	/>
+						<circle cx="2" cy="52" r="2" fill="white"/>
+						<circle cx="50" cy="2" r="2" fill="white"/>
+						<circle cx="5" cy="10" r="2" fill="white"/>
+						<circle cx="52" cy="42" r="2" fill="white"/>
+					</svg>
+				</a>
+				<a class="nav" id="nav-prev">
+					<span>PREVIOUS</span>
+					<svg viewBox="0 0 100 54" width="100" height="54" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+						<polyline points="2,52 50,2 98,52" fill="none" stroke="white" stroke-width="2"	/>
+						<circle cx="2" cy="52" r="2" fill="white"/>
+						<circle cx="50" cy="2" r="2" fill="white"/>
+						<circle cx="98" cy="52" r="2" fill="white"/>
+					</svg>
+				</a>
+				<a class="nav" id="nav-next">
+					<span>NEXT</span>
+					<svg viewBox="0 0 100 55" width="100" height="54" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+						<polyline points="2,2 50,50 98,2" fill="none" stroke="white" stroke-width="2"	/>
+						<circle cx="2" cy="2" r="2" fill="white"/>
+						<circle cx="50" cy="50" r="2" fill="white"/>
+						<circle cx="98" cy="2" r="2" fill="white"/>
+					</svg>
+				</a>
+
+		</div>
+
+	</section>
 
 
+	<div class="menu-container">
+		<a id="menu-container-close">
+			<svg viewBox="0 0 54 54" width="54" height="54" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+				<polyline points="5,10 52,42" fill="none" stroke="white" stroke-width="2"	/>
+				<polyline points="2,52 50,2" fill="none" stroke="white" stroke-width="2"	/>
+				<circle cx="2" cy="52" r="2" fill="white"/>
+				<circle cx="50" cy="2" r="2" fill="white"/>
+				<circle cx="5" cy="10" r="2" fill="white"/>
+				<circle cx="52" cy="42" r="2" fill="white"/>
+			</svg>
+		</a>
+  	<svg id="menu"></svg>
 
-  	<div class="menu-container">
-	  	<svg id="menu"></svg>
+		<ul id="menu-list">
+			<li><a href="#home">Home</a></li>
+			<li><a href="#portfolio">A selection of work</a></li>
+			<li><a href="#">What we do</a></li>
+			<li><a href="#">Contact</a></li>
+		</ul>
 
-	  	<img id="menu-img" src="//static.pexels.com/photos/3182/dark-mountain.jpeg"/>
 
-	  	<div class="menu-icon">
-				<span class="stripe"></span>
-				<span class="stripe"></span>
-				<span class="stripe"></span>
-			</div>
-  	</div>
+  	<img id="menu-img" src="//static.pexels.com/photos/3182/dark-mountain.jpeg"/>
 
-  	<div id="buttons">
-		<button id="b-1">1</button>
-		<button id="b-2"><</button>
-  	</div>
+  	<div class="menu-icon">
+			<span class="stripe"></span>
+			<span class="stripe"></span>
+			<span class="stripe"></span>
+		</div>
+	</div>
+
+
+	<footer>
+		<form >
+			<label for="input-name">
+				<input type="text" id="input-name" placeholder="Enter your name..."/>
+			</label>
+			<label for="input-email">
+				<input type="email" id="input-email" placeholder="your email..."/>
+			</label>
+			<label for="input-message">
+				<textarea id="input-message" placeholder="and your message. Thanks!"></textarea>
+			</label>
+		</form>
+
+	</footer>
 
 
 <script src="js/geoJelly.js"></script>
 <script>
 geoJelly('rgba(255,255,255,0.5)', 'rgba(255,255,255,0.5)', '#index-canvas');
-// function generateNoise(opacity) {
-//    if ( !!!document.createElement('canvas').getContext ) {
-//       return false;
-//    }
-//
-//    var x, y,
-//    number,
-//    opacity = opacity || .2;
-//
-//    for ( x = 0; x < width; x++ ) {
-//       for ( y = 0; y < height; y++ ) {
-//          number = Math.floor( Math.random() * 50 );
-//
-//          context.fillStyle = "rgba(" + number + "," + number + "," + number + "," + opacity + ")";
-//          context.fillRect(x, y, 1, 1);
-//       }
-//    }
-//
-//    //document.body.style.backgroundImage = "url(" + canvas.toDataURL("image/png") + ")";
-// }
-// generateNoise(0.4);
+
 
 </script>
 
 <script>
+
+// menu //
 s6 = [1000, 0,    1000, 750,    0, 750,   0, 700,      0 ,510,   0, 410,   0, 0,   1000, 0]
 s5 = [1000, 0,    1000, 750,    73, 750,  92,636,      20, 452,  0, 322,   0, 0,   1000, 0]
 s4 = [1000, 0,    1000, 750,    309, 750,  233,527,    83, 265,  82, 263,  125, 0,  1000, 0]
@@ -122,21 +206,63 @@ function activateMenuItems() {
   	document.body.classList.toggle('activated');
 }
 
-
-
 document.querySelector('.menu-icon').addEventListener('click', function(){
-	console.log('go')
-
   nextFrame(poly, frames, 0);
 })
 
-document.getElementById('b-2').addEventListener('click', function(){
-	// menuImg.classList.toggle('activated');
+document.getElementById('menu-container-close').addEventListener('click', function(){
 	 lastFrame(poly, frames, 5);
-	 activateMenuItems()
-	 menuInProgress()
+	 activateMenuItems();
+	 menuInProgress();
 })
+
+// menu clicks //
+var menuItems = document.querySelectorAll('#menu-list li a');
+for (var i=0; i < menuItems.length; i++) {
+	menuItems[i].addEventListener('click',onMenuPress)
+}
+function onMenuPress(e) {
+	e.preventDefault();
+
+	e = e ? e : window.e;
+	var target = e.target.hash.slice(1);
+	console.log(target)
+
+	if (target != 'home') {
+		document.body.classList = 'activated active-' +target;
+	} else {
+		document.body.classList = 'activated';
+	}
+	lastFrame(poly, frames, 5);
+	activateMenuItems()
+	menuInProgress()
+}
+
 </script>
+<script type="x-shader/x-vertex" id="vertexshader">
+	attribute float size;
+	attribute vec3 customColor;
+	varying vec3 vColor;
+	void main() {
+		vColor = customColor;
+		vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+		gl_PointSize = size * ( 300.0 / -mvPosition.z );
+		gl_Position = projectionMatrix * mvPosition;
+	}
+
+</script>
+<script type="x-shader/x-fragment" id="fragmentshader">
+	uniform vec3 color;
+	uniform sampler2D texture;
+	varying vec3 vColor;
+	void main() {
+		gl_FragColor = vec4( color * vColor, 1.0 );
+		gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+		if ( gl_FragColor.a < ALPHATEST ) discard;
+	}
+</script>
+
+<script src="js/gallery.js"></script>
 
 
 </body>
