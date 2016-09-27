@@ -23,21 +23,17 @@ function init() {
 
   //gallery
   document.querySelector('.gallery-container-toggle').addEventListener('click',function(e){
-    console.log('hello');
     document.body.classList.toggle('gallery-active');
   })
 
-
   //create threejs element
   var portfolioPage = document.getElementById('portfolio')
-  var threeElement = document.createElement( 'div' );
+  var threeElement = document.createElement('div');
   container = portfolioPage.appendChild( threeElement );
-  //document.body.appendChild( container );
 
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
   camera.position.z = 100;
   camera.lookAt(0,0,0);
-
 
   // scene
 
@@ -63,16 +59,29 @@ function init() {
   light2.shadow.camera.near = 1;
   light2.shadow.camera.far = 500;
   light2.shadow.camera.fov = 130;
+  light2.shadow.camera.position.x = 0;
   light2.shadow.mapSize.width = 2048;
   light2.shadow.mapSize.height = 2048;
 
+// light2.shadow.camera = {
+//   left: -60,
+//   right: 60,
+//   top: 60,
+//   bottom: -60,
+//   near: 1,
+//   far: 500,
+//   fov: 130,
+//   position: {x: 0, y: 100, z: -40}
+// }
+// console.log(light2.shadow.camera.left)
+
   light2.castShadow = true;
   light2.shadow.darkness = 0.5;
-  light2.position.set(0,100,60);
+  light2.position.set(50,100,60);
   light2.scale.set(100,100,100);
   light2.target.position.set( 0, 0, 0 );
 
-  light2.shadow.camera.position.set( 0, 100, -40 );
+  //light2.shadow.camera.position.set( 0, 100, -40 );
   scene.add(light2.target);
 
   scene.add(light2);
@@ -88,7 +97,7 @@ function init() {
   container.appendChild( renderer.domElement );
   renderer.shadowMap.enabled = true;
 
-  //////////////////////document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
   window.addEventListener( 'resize', onWindowResize, false );
 
   // materials //
@@ -96,7 +105,7 @@ function init() {
     color		: 0xcccccc,
     wireframe:true,
     fog: true,
-    wireframeLinewidth: 10
+    wireframeLinewidth: 2
 
   });
   var lineMaterial = new THREE.LineBasicMaterial({
@@ -212,9 +221,6 @@ function init() {
 
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
-
-
-
 
     animate();
 

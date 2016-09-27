@@ -5,21 +5,48 @@ const child = require('child_process');
 const gutil = require('gulp-util');
 const plumber = require('gulp-plumber');
 const notify = require('gulp-notify');
+const uglify = require('gulp-uglify');
+const rename = require('gulp-rename');
+
 
 //const cssFiles = './css/**/*.?(s)css';
 const cssFiles = './css/**/*.scss'
 
 
- gulp.task('css', () => {
-   gulp.src('./css/main.scss')
-     .pipe(plumber({
-       errorHandler: reportError
-     }))
-     .pipe(sass())
-     .pipe(concat('all.css'))
-     .pipe(gulp.dest('assets'));
- });
+  gulp.task('css', () => {
+    gulp.src('./css/main.scss')
+      .pipe(plumber({
+        errorHandler: reportError
+      }))
+      .pipe(sass())
+      .pipe(concat('all.css'))
+      .pipe(gulp.dest('assets'));
+  });
 
+  const jsFiles = './js/**/*.js',
+      jsDest = 'dist/scripts';
+
+  gulp.task('scripts', function() {
+      return gulp.src(jsFiles)
+          .pipe(concat('scripts.js'))
+          .pipe(gulp.dest(jsDest))
+          .pipe(rename('scripts.min.js'))
+          .pipe(uglify())
+          .pipe(gulp.dest(jsDest));
+  });
+
+gulp.task('compress', function() {
+ gulp.src('./js/*.js')
+   .pipe(minify({
+       ext:{
+           src:'-debug.js',
+           min:'.min.js'
+       },
+       //exclude: ['tasks'],
+       //ignoreFiles: ['.combo.js', '-min.js']
+   }))
+   .pipe(gulp.dest('dist'))
+});
 
 gulp.task('jekyll', () => {
   const jekyll = child.spawn('jekyll', ['build',
@@ -55,15 +82,7 @@ gulp.task('serve', () => {
 });
 
 
-/*
-gulp.task('watch', () => {
-  gulp.watch(cssFiles, ['css']);
-});
-*/
-
-
-
-gulp.task('default', ['css', 'jekyll', 'serve'])
+gulp.task('default', ['css', 'scripts', 'jekyll', 'serve'])
 
 function reportError(error) {
     notify({
