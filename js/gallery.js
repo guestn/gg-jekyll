@@ -132,6 +132,7 @@ var mouse, INTERSECTED;
 
 (function(){
   init();
+  console.log('init');
 })()
 
 document.querySelector('.gallery-container-toggle').addEventListener('click',function(e){
@@ -180,19 +181,6 @@ function init() {
   light2.shadow.camera.position.x = 0;
   light2.shadow.mapSize.width = 2048;
   light2.shadow.mapSize.height = 2048;
-
-// light2.shadow.camera = {
-//   left: -60,
-//   right: 60,
-//   top: 60,
-//   bottom: -60,
-//   near: 1,
-//   far: 500,
-//   fov: 130,
-//   position: {x: 0, y: 100, z: -40}
-// }
-// console.log(light2.shadow.camera.left)
-
   light2.castShadow = true;
   light2.shadow.darkness = 0.5;
   light2.position.set(50,100,60);
@@ -204,7 +192,7 @@ function init() {
 
   scene.add(light2);
   var helper = new THREE.CameraHelper( light2.shadow.camera );
-  scene.add( helper );
+  //scene.add( helper );
 
   // renderer
 
@@ -322,11 +310,16 @@ function init() {
     geometry1.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
     geometry1.addAttribute( 'customColor', new THREE.BufferAttribute( colors, 3 ) );
     geometry1.addAttribute( 'size', new THREE.BufferAttribute( sizes, 1 ) );
+    geometry1.addAttribute( 'boundingSphere',new THREE.BufferAttribute({ radius: 500 }));
+    console.log(geometry1);
     //
     // console.log(geometry1);
     // //
     particles = new THREE.Points( geometry1, shaderMaterial );
+    console.log(particles)
     scene.add( particles );
+
+
 
     var planeGeometry = new THREE.PlaneBufferGeometry( 1000, 1000, 32 );
     //var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
@@ -400,10 +393,12 @@ function render() {
       attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE;
 
       INTERSECTED = intersects[ 0 ].index;
+      console.log(intersects[ 0 ]);
 
       document.body.style.cursor = 'pointer'
       attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE * 1.7;
       attributes.size.needsUpdate = true;
+
       toggleGallery(true);
       document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 

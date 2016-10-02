@@ -8,12 +8,12 @@ function geoJelly(strokeColor, pointColor, element) {
 	    height = canvas.height,
 	    radius = 1,
 	    minDistance = 20,
-	    maxDistance = 120,
+	    maxDistance = 100,
 	    minDistance2 = minDistance * minDistance,
 	    maxDistance2 = maxDistance * maxDistance;
 
 	var tau = 2 * Math.PI,
-	    n = 60,
+	    n = 50,
 	    particles = new Array(n);
 
 	for (var i = 0; i < n; ++i) {
