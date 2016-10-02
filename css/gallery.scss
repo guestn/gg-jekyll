@@ -35,7 +35,6 @@
 		right:10px;
 		color: white;
 		font-size: 10px;
-          /* Likely future */
 	}
 	.nav {
 		position: absolute;
@@ -45,6 +44,7 @@
 		height: 54px;
 		z-index: 100;
 		transition: all 0.5s;
+		cursor: pointer;
 		span {
 			font-size:16px;
 			display: block;
@@ -110,14 +110,23 @@
 			.gallery-text {
 				transform: translateY(0);
 			}
+			img {
+				//transform: none;
+			}
 		}
 		img {
 			//float: left;
+			transform: rotate(30deg) skew(-30deg);
 			max-width: 50%;
 			display: block;
+			transition: transform 1s ease-out 0.5s;
+			&:hover {
+				transform:none;
+			}
 		}
 		.gallery-text {
 			width:50%;
+			margin:0 20px;
 			position: relative;
 			transform: translateY(-1000px);
 			transition: transform 1s 0.5s;

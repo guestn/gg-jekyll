@@ -1,94 +1,52 @@
+---
+# homepage
+---
 <!DOCTYPE html>
 <html>
 <meta charset="utf-8">
 <head>
+	<title>guest+guest</title>
 	<link href="assets/all.css" rel="stylesheet" type="text/css">
-
-	<script src="//cdnjs.cloudflare.com/ajax/libs/snap.svg/0.3.0/snap.svg-min.js"></script>
-	<script src="js/three.min.js"></script>
-	<script src="js/OBJLoader.min.js"></script>
-
+	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
 </head>
 <body>
 
 
-	<header><img src="//www.guestandguest.com/images/gg_guestandguest-txt_logo.png"/>
+	<header>
+		<img src="//www.guestandguest.com/images/gg_guestandguest-txt_logo.png"/>
 		<svg viewBox="0 0 100 246" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="1.4" preserveAspectRatio="none">
 			<path d="M0 0l16.3 85.2 15 43L48.8 246l18.4-24L100 0H0z" fill="rgba(0,0,0,0.02)"/>
 			<path d="M0 0l16.2 50.2 14.6 38 18 82.2 18.6-17.6L100 0H0z" fill="#fff"/>
 		</svg>
-
 	</header>
 
+	<div id="homepage-scroller">
+		<div class="page-container" id="homepage-1">
+			<div class="scissors abs text-center">
+				<img id="scissors-1"  class="abs" src="assets/images/scissors-1.png">
+				<img id="scissors-2" class="abs" src="assets/images/scissors-2.png">
+			</div>
+
+			<a href="#" id="homepage-next" class="abs bottom text-center">
+				{% include icon-next.html %}
+			</a>
+			<h1 class="text-center abs top">Untether Your Creativity!</h1>
+
+		</div>
+		<div class="page-container" id="homepage-2">
+			<h2>like this</h2>
+			<img id="finger" class="abs middle" src="https://openclipart.org/image/2400px/svg_to_png/203413/pointing-finger-right.png">
+			<div class="textblock abs middle">People can tell a lot about the quality of a business just by peering into its shop window. Today, your website is the equivalent. Having an intuitive website which doesn't look and function like an after-thought is invaluable to your customers and, ultimately, your business. At guest+guest, we work with you to build a bespoke website that meets all of your needs, and gives your customers peace of mind on their first visit. Your website will be designed uniquely for you, ensuring that your 'shop window' stands out from the crowd!</div>
+		</div>
+	</div>
+
 	<canvas id="index-canvas" width="1000" height="800"></canvas>
-	<img id="finger" src="https://openclipart.org/image/2400px/svg_to_png/203413/pointing-finger-right.png">
-	<span>interesting line of text</span>
-	<div class="spacer"></div>
+
 
 	<section class="page" id="portfolio">
-		<div class="gallery-container">
-			<canvas id="gallery-canvas" width="1000" height="800"></canvas>
-				<div id="slider" class="slide-1">
-				<section class="slide active-slide" id="slide-1">
-						<h2>1</h2>
-						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
-						<div class="gallery-text">
-							These Californian winemakers had a tricky problem- they'd found that existing websites for high-end wines from the region sometimes appeared elitist and unfriendly, and this was not the image they wanted to convey for their brand. The site had to convey the high-quality, luxury product of which they were proud, yet feel approachable and friendly to visitors. The dark colours and gold text mirror the beautiful bottle label, and the homepage background gives a sense of context for the product. Clicking the homepage links brings up a translucent overlay window in which the content is displayed elegantly.
- Custom photography and homepage background
- Auto-hide footer menu
- Fully responsive - for smartphones, tablet and desktop
-Smooth animated content pages
- HTML5 · CSS3 · JQuery · Ajax
-www.blackcordon.com
-						</div>
-						<svg viewBox="0 0 54 54" width="100" height="54" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="square">
-							<path d="M26.8 13.8L28 15v12.2l-7.4 7.2-7.5-7.2V15l7.6-7 3.2 3" fill="none" stroke-width="1" stroke="#fff" transform="rotate(45 22.075 16.775) scale(1.58594 1.66867)"/>
-							<path d="M26.8 13.8L28 15v12.2l-7.4 7.2-7.5-7.2V15l7.6-7 3.2 3" fill="none" stroke-width="1" stroke="#fff" transform="rotate(-135 31.366 24.893) scale(1.58594 1.66867)"/>
-					</svg>
-					</section>
-					<section class="slide" id="slide-2">
-						<h2>2</h2>
-						<img src="assets/images/portfolio/grahamortho-1.jpg">
-						<div class="gallery-text">
-							These Californian winemakers had a t
- 							HTML5 · CSS3 · JQuery · Ajax
-							www.grahamortho.com
-						</div>
-					</section>
-					<section class="slide" id="slide-3">
-						<h2>3</h2>
-						<img src="http://www.guestandguest.com/images/pf/blackcordon-pf3.png">
-					</section>
-				</div>
-				<a class="gallery-container-toggle">
-					<svg viewBox="0 0 54 54" width="54" height="54" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-						<polyline points="5,10 52,42" fill="none" stroke="white" stroke-width="2"	/>
-						<polyline points="2,52 50,2" fill="none" stroke="white" stroke-width="2"	/>
-						<circle cx="2" cy="52" r="2" fill="white"/>
-						<circle cx="50" cy="2" r="2" fill="white"/>
-						<circle cx="5" cy="10" r="2" fill="white"/>
-						<circle cx="52" cy="42" r="2" fill="white"/>
-					</svg>
-				</a>
-				<a class="nav" id="nav-prev">
-					<span>PREVIOUS</span>
-					<svg viewBox="0 0 100 54" width="100" height="54" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-						<polyline points="2,52 50,2 98,52" fill="none" stroke="white" stroke-width="2"	/>
-						<circle cx="2" cy="52" r="2" fill="white"/>
-						<circle cx="50" cy="2" r="2" fill="white"/>
-						<circle cx="98" cy="52" r="2" fill="white"/>
-					</svg>
-				</a>
-				<a class="nav" id="nav-next">
-					<span>NEXT</span>
-					<svg viewBox="0 0 100 55" width="100" height="54" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-						<polyline points="2,2 50,50 98,2" fill="none" stroke="white" stroke-width="2"	/>
-						<circle cx="2" cy="2" r="2" fill="white"/>
-						<circle cx="50" cy="50" r="2" fill="white"/>
-						<circle cx="98" cy="2" r="2" fill="white"/>
-					</svg>
-				</a>
 
+		<div class="gallery-container">
+			{% include gallery.html %}
 		</div>
 
 	</section>
@@ -115,7 +73,8 @@ www.blackcordon.com
 		</ul>
 
 
-  	<img id="menu-img" src="//static.pexels.com/photos/3182/dark-mountain.jpeg"/>
+  	<!-- <img id="menu-img" src="//static.pexels.com/photos/3182/dark-mountain.jpeg"/> -->
+		<img id="menu-img" src="assets/images/menu-bg.jpg"/>
 
   	<div class="menu-icon">
 			<span class="stripe"></span>
@@ -140,10 +99,17 @@ www.blackcordon.com
 
 	</footer>
 
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/snap.svg/0.3.0/snap.svg-min.js"></script>
+<script src="js/three.min.js"></script>
+<script src="js/OBJLoader.min.js"></script>
 <script src="js/geoJelly.js"></script>
+<script src="js/blimp.js"></script>
+<script src="js/homepage.js"></script>
+<script src="js/gallery.js"></script>
+
+
 <script>
-geoJelly('rgba(255,255,255,0.5)', 'rgba(255,255,255,0.5)', '#index-canvas');
+geoJelly('rgba(205,0,50,0.5)', 'rgba(255,255,255,0.5)', '#index-canvas');
 
 
 </script>
@@ -157,14 +123,13 @@ s4 = [1000, 0,    1000, 750,    309, 750,  233,527,    83, 265,  82, 263,  125, 
 s3 = [1000, 0,    1000, 750,   500, 750,  354, 588,   301, 263,  281, 220,   150,0,  1000, 0]
 s2 = [1000, 52,   1000, 750,   659, 698,  500, 497,   569, 375,  635, 116,  700,50,  1000, 22]
 s1 = [1000, 52,   1000, 750,   856, 544,  692, 497,   765, 252,  796, 122,  900, 100,  1000, 52]
-//s0 = [1000, 52,   1000, 698,    976, 516, 957, 375,    973, 253, 985, 167, 990, 120,  1000, 52]
 s0 = [1000, 300,   1000, 480,    976, 435,  957, 375,    970, 330, 980, 320,  990, 310,  1000, 300]
 
 
 var s = Snap('#menu');
 s.attr({preserveAspectRatio: 'none',viewBox:'0 0 1000 750'});
 var poly = s.polygon(s0);
-poly.attr({ /*fill:'url(#img1)'*/ fill: '#333'})
+poly.attr({ fill: '#333'})
 
 var type = mina.linear
 var dur = 140
@@ -181,14 +146,17 @@ var frames = [
 
 
 function nextFrame ( el, frameArr, n ) {
-
+	console.log('g0');
    if( n >= frameArr.length ) {
      activateMenuItems();
-     menuInProgress();
      return;
    }
+
    el.animate( frameArr[n].animation, frameArr[n].dur, nextFrame.bind( null, el, frameArr, n + 1 ) );
+	 //setTimeout(menuInProgress(false),1000);
+
 }
+
 function lastFrame ( el, frameArr, n ) {
    if( n < 0 ) { return }
    el.animate( frameArr[n].animation, frameArr[n].dur, lastFrame.bind( null, el, frameArr, n - 1 ));
@@ -198,22 +166,26 @@ function lastFrame ( el, frameArr, n ) {
 var menuImg = document.getElementById('menu-img');
 
 
-function menuInProgress() {
-	 document.body.classList.toggle('animating');
+function menuInProgress(test) {
+	test ? document.body.classList.add('animating') : document.body.classList.remove('animating')
 }
 
 function activateMenuItems() {
-  	document.body.classList.toggle('activated');
+		document.body.classList.toggle('activated');
 }
 
 document.querySelector('.menu-icon').addEventListener('click', function(){
+	menuInProgress(true);
   nextFrame(poly, frames, 0);
+	setTimeout(function() { console.log('here'); menuInProgress(false)},dur*10);
+
 })
 
 document.getElementById('menu-container-close').addEventListener('click', function(){
+		menuInProgress(true);
 	 lastFrame(poly, frames, 5);
 	 activateMenuItems();
-	 menuInProgress();
+	 setTimeout(function() { menuInProgress(false) },dur*10);
 })
 
 // menu clicks //
@@ -221,6 +193,7 @@ var menuItems = document.querySelectorAll('#menu-list li a');
 for (var i=0; i < menuItems.length; i++) {
 	menuItems[i].addEventListener('click',onMenuPress)
 }
+
 function onMenuPress(e) {
 	e.preventDefault();
 
@@ -230,15 +203,19 @@ function onMenuPress(e) {
 
 	if (target != 'home') {
 		document.body.classList = 'activated active-' +target;
+		if (target == 'portfolio') {
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			window.addEventListener( 'resize', onWindowResize, false );
+		}
 	} else {
 		document.body.classList = 'activated';
 	}
 	lastFrame(poly, frames, 5);
 	activateMenuItems()
-	menuInProgress()
 }
 
 </script>
+
 <script type="x-shader/x-vertex" id="vertexshader">
 	attribute float size;
 	attribute vec3 customColor;
@@ -262,7 +239,6 @@ function onMenuPress(e) {
 	}
 </script>
 
-<script src="js/gallery.js"></script>
 
 
 </body>

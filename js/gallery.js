@@ -1,3 +1,118 @@
+// set up canvas bg //
+geoJelly('rgba(255,255,255,0.5)', 'rgba(255,255,255,0.5)', '#gallery-canvas');
+
+// navigation //
+
+var slider = document.getElementById('slider');
+var slides = document.querySelectorAll('.slide');
+var currentSlide = 1;
+var slideCount = 3;
+
+var nav = document.querySelectorAll('.nav')
+for (var i=0; i <nav.length; i++) {
+  nav[i].addEventListener('click',onNavPress)
+}
+window.addEventListener( 'mousewheel', function(e){
+  onMouseWheel(e)
+});
+window.addEventListener( 'DOMMouseScroll', function(e) {
+  onMouseWheel(e)
+});
+
+// set nav arrows
+function setNavControls(n) {
+  if (n==1) {
+    nav[0].classList = 'nav hidden';
+  } else if (n==slideCount) {
+    nav[1].classList = 'nav hidden';
+  } else {
+    nav[0].classList = nav[1].classList = 'nav';
+  }
+}
+
+// scroll handler
+var onMouseWheel = debounce(function(e) {
+  e = e ? e : window.e;
+    //console.log('delta: ' + e.wheelDelta);
+    var scroll = ( e.detail ? e.detail : e.wheelDelta );
+    if (scroll > 50  & currentSlide > 1) {
+      prevSlide();
+    } else if (scroll < -50 & currentSlide < slideCount) {
+      nextSlide();
+    }
+}, 20);
+
+// nav button press handler
+function onNavPress(e) {
+  e = e ? e : window.e;
+  console.log('press');
+
+  var dir = e.target.id;// | e.target.parentElement.id;
+  dir = (!dir) ? e.target.parentElement.id : '';
+
+  if (dir == 'nav-prev' & currentSlide > 1) {
+    prevSlide()
+  } else if (dir == 'nav-next' & currentSlide < slideCount) {
+    nextSlide()
+  }
+}
+
+// goto to previous
+function prevSlide() {
+  currentSlide--
+  slider.classList = 'slide-' + currentSlide
+  setNavControls(currentSlide);
+  for (var i=0; i < slides.length; i++) {
+    slides[i].classList = 'slide';
+  }
+  document.getElementById('slide-'+currentSlide).classList.add('active-slide')
+}
+
+// goto to next
+function nextSlide() {
+  console.log(currentSlide)
+  currentSlide++
+  slider.classList = 'slide-' + currentSlide
+  setNavControls(currentSlide);
+  for (var i=0; i < slides.length; i++) {
+    slides[i].classList = 'slide';
+  }
+  document.getElementById('slide-'+currentSlide).classList.add('active-slide')
+}
+
+function toggleGallery(test) {
+  console.log('toggle '+test);
+  if (test == true) {
+    document.body.classList.add('gallery-active');
+  } else if (test == false){
+    document.body.classList.remove('gallery-active');
+    document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+  }
+}
+
+// debounce scroll etc
+function debounce(func, wait, immediate) {
+  var timeout;
+  return function() {
+    var context = this, args = arguments;
+    var later = function() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+};
+
+setNavControls(currentSlide)
+
+
+
+
+/// THREEJS
+
 var container;
 
 var camera, scene, renderer;
@@ -19,12 +134,13 @@ var mouse, INTERSECTED;
   init();
 })()
 
-function init() {
+document.querySelector('.gallery-container-toggle').addEventListener('click',function(e){
+  toggleGallery(false);
+})
 
+function init() {
   //gallery
-  document.querySelector('.gallery-container-toggle').addEventListener('click',function(e){
-    document.body.classList.toggle('gallery-active');
-  })
+
 
   //create threejs element
   var portfolioPage = document.getElementById('portfolio')
@@ -33,6 +149,8 @@ function init() {
 
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
   camera.position.z = 100;
+  camera.position.y = 0;
+  camera.position.x = 0;
   camera.lookAt(0,0,0);
 
   // scene
@@ -97,7 +215,7 @@ function init() {
   container.appendChild( renderer.domElement );
   renderer.shadowMap.enabled = true;
 
-  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+  //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
   window.addEventListener( 'resize', onWindowResize, false );
 
   // materials //
@@ -227,11 +345,6 @@ function init() {
 
   });
 
-
-
-
-
-
 }
 
 function onWindowResize() {
@@ -291,7 +404,9 @@ function render() {
       document.body.style.cursor = 'pointer'
       attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE * 1.7;
       attributes.size.needsUpdate = true;
-      document.addEventListener('click', toggleGallery);
+      toggleGallery(true);
+      document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+
 
     }
 
@@ -302,12 +417,7 @@ function render() {
 
   }
 
-  function toggleGallery() {
-    document.body.classList.add('gallery-active');
-    document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-    document.removeEventListener('click', toggleGallery);
 
-  }
 
   renderer.render( scene, camera );
 

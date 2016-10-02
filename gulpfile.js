@@ -82,7 +82,7 @@ gulp.task('serve', () => {
 });
 
 
-gulp.task('default', ['css', 'scripts', 'jekyll', 'serve'])
+gulp.task('default', ['css', /*'scripts',*/ 'jekyll', 'serve'])
 
 function reportError(error) {
     notify({
