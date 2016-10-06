@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+	<title>TEST</title>
+	<link href="assets/all.css" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+</head>
+<body>
+	<div id="test"></div>
+
+
+
+	<!-- <script type="x-shader/x-vertex" id="vertexshader">
+		attribute float size;
+		attribute vec3 customColor;
+		varying vec3 vColor;
+		void main() {
+			vColor = customColor;
+			vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+			gl_PointSize = size * ( 300.0 / -mvPosition.z );
+			gl_Position = projectionMatrix * mvPosition;
+		}
+
+	</script>
+	<script type="x-shader/x-fragment" id="fragmentshader">
+		uniform vec3 color;
+		uniform sampler2D texture;
+		varying vec3 vColor;
+		void main() {
+			gl_FragColor = vec4( color * vColor, 1.0 );
+			gl_FragColor = gl_FragColor * texture2D( texture, gl_PointCoord );
+			//if ( gl_FragColor.a < ALPHATEST ) discard;
+		}
+	</script>-->
+	<!-- <script type="x-shader/x-vertex" id="vertexshader">
+	        attribute vec2 a_texCoord;
+	        varying vec2 v_texCoord;
+
+	        void main() {
+	            // Pass the texcoord to the fragment shader.
+	            v_texCoord = a_texCoord;
+
+	            gl_Position = projectionMatrix *
+	                          modelViewMatrix *
+	                          vec4(position,1.0);
+	        }
+	    </script>
+
+	    <script type="x-shader/x-fragment" id="fragmentshader">
+	        uniform sampler2D u_texture;
+	        varying vec2 v_texCoord;
+
+	        void main() {
+	            vec4 color = texture2D(u_texture, v_texCoord);
+	            gl_FragColor = color;
+	        }
+
+	    </script> -->
+
+			<!-- <script type="x-shader/x-vertex" id="vertexshader">
+				attribute float size;
+				attribute vec3 customColor;
+				varying vec3 vColor;
+				void main() {
+					vColor = customColor;
+					vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+					gl_PointSize = size * ( 300.0 / -mvPosition.z );
+					gl_Position = projectionMatrix * mvPosition;
+				}
+
+			</script>
+			<script type="x-shader/x-fragment" id="fragmentshader">
+				uniform vec3 color;
+				uniform sampler2D u_texture;
+				varying vec3 vColor;
+				void main() {
+					gl_FragColor = vec4( color * vColor, 1.0 );
+					gl_FragColor = gl_FragColor * texture2D( u_texture, gl_PointCoord );
+					//if ( gl_FragColor.a < ALPHATEST ) discard;
+				}
+			</script> -->
+			<script type="x-shader/x-vertex" id="vertexshader">
+			uniform float size;
+			void main() {
+			  gl_Position = projectionMatrix *
+			                modelViewMatrix *
+			                vec4(position,0.0005);
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+				//gl_PointSize = size * ( 100.0 / -mvPosition.x );
+				gl_PointSize = size;
+
+
+
+
+			}
+
+			</script>
+			<script type="x-shader/x-fragment" id="fragmentshader">
+				uniform sampler2D u_texture;
+				void main() {
+  				// gl_FragColor = vec4(1.0,  // R
+          //             0.0,  // G
+          //             1.0,  // B
+          //             1.0); // A
+					gl_FragColor = gl_FragColor * texture2D( u_texture, gl_PointCoord );
+
+				}
+			</script> -->
+
+
+
+	<script src="js/three.min.js"></script>
+	<script src="js/OBJLoader.min.js"></script>
+	<script src="js/test.js"></script>
+</body>
+
+</html>

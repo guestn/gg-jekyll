@@ -123,12 +123,15 @@ var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
 var particles, uniforms;
-var colors, positions, sizes, geometry1;
+var colors, positions, sizes, geometry1, targetList =[];
+//var sphereEnd = []
+
 
 var PARTICLE_SIZE = 50;
 
-var raycaster, intersects;
+var raycaster, intersects = [];
 var mouse, INTERSECTED;
+
 
 (function(){
   init();
@@ -158,7 +161,7 @@ function init() {
 
   scene = new THREE.Scene();
 
-  scene.fog = new THREE.FogExp2( 0xaaaaaa, 0.009 );
+  //scene.fog = new THREE.FogExp2( 0xaaaaaa, 0.009 );
 
   // lights
   var ambient = new THREE.AmbientLight( 0xaaaaaa );
@@ -171,12 +174,12 @@ function init() {
 
   var light2	= new THREE.DirectionalLight( 0xFAEDFF, 1 );
 
-  light2.shadow.camera.left = -60; // or whatever value works for the scale of your scene
-  light2.shadow.camera.right = 60;
-  light2.shadow.camera.top = 60;
-  light2.shadow.camera.bottom = -60;
+  light2.shadow.camera.left = -100; // or whatever value works for the scale of your scene
+  light2.shadow.camera.right = 100;
+  light2.shadow.camera.top = 100;
+  light2.shadow.camera.bottom = -100;
   light2.shadow.camera.near = 1;
-  light2.shadow.camera.far = 500;
+  light2.shadow.camera.far = 1500;
   light2.shadow.camera.fov = 130;
   light2.shadow.camera.position.x = 0;
   light2.shadow.mapSize.width = 2048;
@@ -203,7 +206,10 @@ function init() {
   container.appendChild( renderer.domElement );
   renderer.shadowMap.enabled = true;
 
-  //document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+// TEMPORARY //
+  document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+  // TEMPORARY //
+
   window.addEventListener( 'resize', onWindowResize, false );
 
   // materials //
@@ -220,9 +226,9 @@ function init() {
   });
 
   var discMaterial = new THREE.MeshPhongMaterial( {
-    color: 0xffffff,
+    color: 0xaaaaaa,
     shininess: 100,
-    emissive:  0xffffff,
+    //emissive:  0xffffff,
   });
 
   var shaderMaterial = new THREE.ShaderMaterial( {
@@ -247,6 +253,8 @@ function init() {
 
   var galleryItems = [0,1,2,3];
 
+
+
   loader.load( './assets/headframe.obj', function ( object ) {
 
     object.traverse( function ( child ) {
@@ -261,7 +269,8 @@ function init() {
         positions = new Float32Array(galleryItems.length * 3)
         colors = new Float32Array(galleryItems.length * 3);
         sizes = new Float32Array(galleryItems.length * 2);
-
+        //var domEvent = new THREEx.DomEvent();
+        //THREEx.DomEvent.noConflict()
         //for (var i = 2013; i < child.geometry.attributes.position.count; i+=3)
         for (var i = 438; i < 450; i+=3) {
 
@@ -269,12 +278,13 @@ function init() {
             var y = child.geometry.attributes.position.array[i+1]
             var z = child.geometry.attributes.position.array[i+2]
             var start = new THREE.Vector3( x*scale, y*scale+offsetY, z*scale )
-            var end = new THREE.Vector3( x*scale*2, (y*scale)*2+offsetY, z*scale*2 )
+            var end = new THREE.Vector3(x*scale*2, (y*scale)*2+offsetY, z*scale*2 )
 
             var lineGeometry = new THREE.Geometry();
             lineGeometry.vertices.push(start);
             lineGeometry.vertices.push(end);
             var line = new THREE.Line(lineGeometry, lineMaterial);
+            line.castShadow = true;
             scene.add(line);
 
             var sphereGeometry = new THREE.SphereBufferGeometry(1,1,10,10);
@@ -282,18 +292,21 @@ function init() {
             sphere.position.set(x*scale, y*scale+offsetY, z*scale);
             scene.add(sphere);
 
-            //console.log(end);
-            end.toArray(positions, i-438);
 
-            var color = new THREE.Color();
-            color.setHSL( 0.01 + 0.1, 1.0, 0.5 )
-            for (var j=0; j < colors.length; j++) {
-              color.toArray( colors, j);
-            }
 
-            for (var j=0; j < sizes.length; j++) {
-              sizes[ j ] = PARTICLE_SIZE;
-            }
+            var thumbnailGeometry = new THREE.BoxGeometry(10,10,0.1);
+            var thumbnail = new THREE.Mesh( thumbnailGeometry, discMaterial )
+            thumbnail.position.set(x*scale*2 +5, (y*scale)*2+offsetY-5, z*scale*2 );
+            //thumbnail.rotation.y = Math.PI/5
+            thumbnail.castShadow = true;
+            thumbnail.receiveShadow = true;
+            thumbnail.name = 'thing-'+i
+            thumbnail.index = i;
+            scene.add(thumbnail);
+            targetList.push(thumbnail);
+
+
+
         }
 
       }
@@ -306,20 +319,6 @@ function init() {
     object.receiveShadow = true;
     scene.add( object );
 
-    geometry1 = new THREE.BufferGeometry();
-    geometry1.addAttribute( 'position', new THREE.BufferAttribute( positions, 3 ) );
-    geometry1.addAttribute( 'customColor', new THREE.BufferAttribute( colors, 3 ) );
-    geometry1.addAttribute( 'size', new THREE.BufferAttribute( sizes, 1 ) );
-    //geometry1.addAttribute( 'boundingSphere',new THREE.BufferAttribute({ radius: 500 }));
-    console.log(geometry1);
-    //
-    // console.log(geometry1);
-    // //
-    particles = new THREE.Points( geometry1, shaderMaterial );
-    console.log(particles)
-    scene.add( particles );
-
-
 
     var planeGeometry = new THREE.PlaneBufferGeometry( 1000, 1000, 32 );
     //var material = new THREE.MeshBasicMaterial( {color: 0xffff00, side: THREE.DoubleSide} );
@@ -329,7 +328,7 @@ function init() {
     plane.receiveShadow = true;
     scene.add( plane );
 
-
+    console.log(targetList)
     raycaster = new THREE.Raycaster();
     mouse = new THREE.Vector2();
 
@@ -360,6 +359,8 @@ function onDocumentMouseMove( event ) {
 
   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+
   //console.log(mouse);
 }
 
@@ -372,6 +373,11 @@ function animate() {
 
 }
 
+function onDocumentMouseDown() {
+  toggleGallery(true)
+  document.removeEventListener( 'mousedown', onDocumentMouseDown, false );
+
+}
 function render() {
 
   camera.position.x += ( mouseX - camera.position.x ) * 0.05;
@@ -379,38 +385,50 @@ function render() {
 
   camera.lookAt( scene.position );
 
-
-  var geometry = particles.geometry;
-  var attributes = geometry.attributes;
-
   raycaster.setFromCamera( mouse, camera );
 
-  // intersects = raycaster.intersectObject( particles );
-  // if ( intersects.length > 0 ) {
-  //
-  //   if ( INTERSECTED != intersects[ 0 ].index ) {
-  //
-  //     attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE;
-  //
-  //     INTERSECTED = intersects[ 0 ].index;
-  //     console.log(intersects[ 0 ]);
-  //
-  //     document.body.style.cursor = 'pointer'
-  //     attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE * 1.7;
-  //     attributes.size.needsUpdate = true;
-  //
-  //     toggleGallery(true);
-  //     document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-  //
-  //
-  //   }
-  //
-  // } else if ( INTERSECTED !== null ) {
-  //   attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE;
-  //   attributes.size.needsUpdate = true;
-  //   INTERSECTED = null;
-  //
-  // }
+  intersects = raycaster.intersectObjects( targetList );
+  if ( intersects.length > 0 ) {
+    INTERSECTED = intersects[ 0 ].object.index;
+
+
+
+    //console.log(INTERSECTED)
+    if (INTERSECTED != null) {
+      document.body.style.cursor = 'pointer'
+
+      intersects[ 0 ].object.scale.set(1.1,1.1,1.1);
+      document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+
+    }
+    //intersects[ 0 ].object.scale.set(2,2,2)
+    // if ( intersects[0]) {
+    //   console.log(intersects[0]);
+    //
+    // //  attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE;
+    //   intersects[0].object.scale.set(2,2,2)
+    //
+    //   INTERSECTED = intersects[ 0 ].index;
+    //   console.log(intersects[ 0 ]);
+    //
+    //   document.body.style.cursor = 'pointer'
+    // //  attributes.size.array[ INTERSECTED ] = PARTICLE_SIZE * 1.7;
+    // //  attributes.size.needsUpdate = true;
+    //
+    //   toggleGallery(true);
+    //   document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+    //
+    //
+    // }
+
+
+  } else {
+    targetList.forEach(function(mesh){
+      mesh.scale.set(1,1,1)
+    })
+    INTERSECTED = null;
+  }
 
 
 
